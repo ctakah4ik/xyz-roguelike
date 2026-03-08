@@ -1,0 +1,77 @@
+# Unreal Engine (generated / cache)
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+Engine/
+
+# UE build products / temp
+Build/
+*.tmp
+*.log
+*.pdb
+*.obj
+*.idb
+*.pch
+*.ipch
+
+# IDE: Visual Studio
+.vs/
+*.sln
+*.suo
+*.user
+*.userosscache
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.VC.opendb
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.vcxproj.DotSettings.user
+
+# Visual Studio build dirs (если вдруг появляются)
+x64/
+Win64/
+Debug*/
+Release*/
+Development*/
+
+# IDE: Rider / JetBrains
+.idea/
+*.sln.iml
+*.ipr
+*.iws
+
+# Rider plugin caches / workspace
+**/.Rider/
+**/.idea.Rider/
+**/.idea/
+*.DotSettings.user
+
+# Unreal / Rider / VS generated project files
+*.xcodeproj
+*.xcworkspace
+*.code-workspace
+compile_commands.json
+
+# OS junk
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Crash dumps
+*.dmp
+
+# C++
+*.lib
+*.exp
+*.ilk
+*.map
+*.aps
+*.ncb
+*.tlog
+*.tlog.*
+x64/
+leaderboard.dat
