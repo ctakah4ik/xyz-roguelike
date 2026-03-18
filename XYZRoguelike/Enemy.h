@@ -5,6 +5,8 @@
 #include "RigidbodyComponent.h"
 #include "SpriteColliderComponent.h"
 #include "ChaseComponent.h"
+#include "HealthComponent.h"
+#include "AttackComponent.h"
 #include "GameObject.h"
 
 namespace XYZRoguelike
