@@ -1,6 +1,7 @@
 #include "Player.h"
 #include <ResourceSystem.h>
 #include <SpriteColliderComponent.h>
+#include <Logger.h>
 
 namespace XYZRoguelike
 {

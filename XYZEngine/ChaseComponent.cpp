@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ChaseComponent.h"
+#include "Logger.h"
 
 namespace XYZEngine
 {
@@ -7,6 +8,12 @@ namespace XYZEngine
 	{
 		transform = gameObject->GetComponent<TransformComponent>();
 		body = gameObject->GetComponent<RigidbodyComponent>();
+
+		XYZ_ASSERT(body != nullptr, "ChaseComponent requires RigidbodyComponent");
+		if (body == nullptr)
+		{
+			Logger::Instance()->Error("ChaseComponent: RigidbodyComponent not found on " + gameObject->GetName());
+		}
 	}
 
 	void ChaseComponent::Update(float deltaTime)
@@ -39,15 +46,22 @@ namespace XYZEngine
 	void ChaseComponent::SetTarget(TransformComponent* newTarget)
 	{
 		target = newTarget;
+		if (newTarget != nullptr)
+		{
+			Logger::Instance()->Info("ChaseComponent on " + gameObject->GetName() +
+				" now targeting " + newTarget->GetGameObject()->GetName());
+		}
 	}
 
 	void ChaseComponent::SetDetectionRadius(float newRadius)
 	{
+		XYZ_ASSERT(newRadius > 0.f, "Detection radius must be positive");
 		detectionRadius = newRadius;
 	}
 
 	void ChaseComponent::SetSpeed(float newSpeed)
 	{
+		XYZ_ASSERT(newSpeed >= 0.f, "Chase speed must be non-negative");
 		speed = newSpeed;
 	}
 }

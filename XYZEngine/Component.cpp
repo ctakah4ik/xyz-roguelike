@@ -1,13 +1,13 @@
 #include "pch.h"
 #include "Component.h"
-#include <iostream>
+#include "Logger.h"
 
 namespace XYZEngine
 {
 	Component::Component(GameObject* gameObject) : gameObject(gameObject) {}
 	Component::~Component()
 	{
-		std::cout << "Deleted component: " << this << std::endl;
+		Logger::Instance()->Debug("Component destroyed.");
 	}
 	GameObject* Component::GetGameObject()
 	{

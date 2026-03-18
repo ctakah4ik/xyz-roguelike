@@ -1,5 +1,6 @@
 #include "Enemy.h"
 #include <ResourceSystem.h>
+#include <Logger.h>
 
 namespace XYZRoguelike
 {

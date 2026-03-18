@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "PhysicsSystem.h"
+#include "Logger.h"
 
 namespace XYZEngine
 {
@@ -59,12 +60,12 @@ namespace XYZEngine
 							if (intersectionPosition.y > aPosition.y)
 							{
 								aTransform->MoveBy({ 0, -intersectionHeight });
-								std::cout << "Top collision" << std::endl;
+								Logger::Instance()->Debug("Top collision");
 							}
 							else
 							{
 								aTransform->MoveBy({ 0, intersectionHeight });
-								std::cout << "Down collision" << std::endl;
+								Logger::Instance()->Debug("Down collision");
 							}
 						}
 						else
@@ -72,12 +73,12 @@ namespace XYZEngine
 							if (intersectionPosition.x > aPosition.x)
 							{
 								aTransform->MoveBy({ -intersectionWidth, 0.f });
-								std::cout << "Right collision" << std::endl;
+								Logger::Instance()->Debug("Right collision");
 							}
 							else
 							{
 								aTransform->MoveBy({ intersectionWidth, 0.f });
-								std::cout << "Left collision" << std::endl;
+								Logger::Instance()->Debug("Left collision");
 							}
 						}
 
@@ -105,13 +106,13 @@ namespace XYZEngine
 
 	void PhysicsSystem::Subscribe(ColliderComponent* collider)
 	{
-		std::cout << "Subscribe " << collider << std::endl;
+		XYZ_ASSERT(collider != nullptr, "Cannot subscribe null collider");
+		Logger::Instance()->Debug("PhysicsSystem: collider subscribed for " + collider->GetGameObject()->GetName());
 		colliders.push_back(collider);
 	}
 	void PhysicsSystem::Unsubscribe(ColliderComponent* collider)
 	{
-		std::cout << "Unsubscribe " << collider << std::endl;
-
+		Logger::Instance()->Debug("PhysicsSystem: collider unsubscribed for " + collider->GetGameObject()->GetName());
 		colliders.erase(std::remove_if(colliders.begin(), colliders.end(), [collider](ColliderComponent* obj) { return obj == collider; }), colliders.end());
 	}
 }

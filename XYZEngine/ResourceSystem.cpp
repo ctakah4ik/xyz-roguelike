@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ResourceSystem.h"
+#include "Logger.h"
 
 namespace XYZEngine
 {
@@ -13,6 +14,7 @@ namespace XYZEngine
 	{
 		if (textures.find(name) != textures.end())
 		{
+			Logger::Instance()->Warning("Texture '" + name + "' already loaded. Skipping.");
 			return;
 		}
 
@@ -21,11 +23,24 @@ namespace XYZEngine
 		{
 			newTexture->setSmooth(isSmooth);
 			textures.emplace(name, newTexture);
+			Logger::Instance()->Info("Loaded texture '" + name + "' from " + sourcePath);
+		}
+		else
+		{
+			Logger::Instance()->Error("Failed to load texture '" + name + "' from " + sourcePath);
+			delete newTexture;
+			throw EngineException("Failed to load texture: " + sourcePath);
 		}
 	}
 	const sf::Texture* ResourceSystem::GetTextureShared(const std::string& name) const
 	{
-		return textures.find(name)->second;
+		auto it = textures.find(name);
+		if (it == textures.end())
+		{
+			Logger::Instance()->Error("Texture '" + name + "' not found!");
+			throw EngineException("Texture not found: " + name);
+		}
+		return it->second;
 	}
 	sf::Texture* ResourceSystem::GetTextureCopy(const std::string& name) const
 	{
@@ -44,12 +59,16 @@ namespace XYZEngine
 	{
 		if (textureMaps.find(name) != textureMaps.end())
 		{
+			Logger::Instance()->Warning("TextureMap '" + name + "' already loaded. Skipping.");
 			return;
 		}
 
 		sf::Texture textureMap;
 		if (textureMap.loadFromFile(sourcePath))
 		{
+			Logger::Instance()->Info("Loading texture map '" + name + "' from " + sourcePath +
+				" (element: " + std::to_string(elementPixelSize.x) + "x" + std::to_string(elementPixelSize.y) +
+				", count: " + std::to_string(totalElements) + ")");
 			auto textureMapElements = new std::vector<sf::Texture*>();
 
 			auto textureSize = textureMap.getSize();
@@ -117,6 +136,7 @@ namespace XYZEngine
 	{
 		if (textures.find(name) != textures.end())
 		{
+			Logger::Instance()->Warning("Color texture '" + name + "' already exists. Skipping.");
 			return;
 		}
 
@@ -127,9 +147,12 @@ namespace XYZEngine
 		if (newTexture->loadFromImage(image))
 		{
 			textures.emplace(name, newTexture);
+			Logger::Instance()->Info("Created color texture '" + name + "' (" +
+				std::to_string(width) + "x" + std::to_string(height) + ")");
 		}
 		else
 		{
+			Logger::Instance()->Error("Failed to create color texture '" + name + "'");
 			delete newTexture;
 		}
 	}
@@ -138,6 +161,7 @@ namespace XYZEngine
 	{
 		if (soundBuffers.find(name) != soundBuffers.end())
 		{
+			Logger::Instance()->Warning("Sound buffer '" + name + "' already loaded. Skipping.");
 			return;
 		}
 
@@ -145,10 +169,13 @@ namespace XYZEngine
 		if (newBuffer->loadFromFile(sourcePath))
 		{
 			soundBuffers.emplace(name, newBuffer);
+			Logger::Instance()->Info("Loaded sound buffer '" + name + "' from " + sourcePath);
 		}
 		else
 		{
+			Logger::Instance()->Error("Failed to load sound buffer '" + name + "' from " + sourcePath);
 			delete newBuffer;
+			throw EngineException("Failed to load sound buffer: " + sourcePath);
 		}
 	}
 
@@ -178,12 +205,18 @@ namespace XYZEngine
 		{
 			music.setLoop(loop);
 			music.play();
+			Logger::Instance()->Info("Playing music: " + sourcePath + (loop ? " (looped)" : ""));
+		}
+		else
+		{
+			Logger::Instance()->Error("Failed to open music file: " + sourcePath);
 		}
 	}
 
 	void ResourceSystem::StopMusic()
 	{
 		music.stop();
+		Logger::Instance()->Info("Music stopped.");
 	}
 
 	void ResourceSystem::SetMusicVolume(float volume)
@@ -201,6 +234,11 @@ namespace XYZEngine
 			sf::Sound* sound = new sf::Sound(*it->second);
 			sound->play();
 			activeSounds.push_back(sound);
+			Logger::Instance()->Debug("Playing sound: " + bufferName);
+		}
+		else
+		{
+			Logger::Instance()->Warning("Sound buffer '" + bufferName + "' not found. Cannot play.");
 		}
 	}
 

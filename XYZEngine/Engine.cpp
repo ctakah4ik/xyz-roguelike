@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "Engine.h"
-#include <iostream>
 #include "GameWorld.h"
 #include "RenderSystem.h"
+#include "Logger.h"
 
 namespace XYZEngine
 {
@@ -20,9 +20,11 @@ namespace XYZEngine
 
 	void Engine::Run()
 	{
+		Logger::Instance()->Info("Engine started. Entering main loop.");
+
 		sf::Clock gameClock;
 		sf::Event event;
-		
+
 		while (RenderSystem::Instance()->GetMainWindow().isOpen())
 		{
 			sf::Time dt = gameClock.restart();
@@ -32,6 +34,7 @@ namespace XYZEngine
 			{
 				if (event.type == sf::Event::Closed)
 				{
+					Logger::Instance()->Info("Window close event received.");
 					RenderSystem::Instance()->GetMainWindow().close();
 				}
 			}
@@ -50,5 +53,7 @@ namespace XYZEngine
 
 			RenderSystem::Instance()->GetMainWindow().display();
 		}
+
+		Logger::Instance()->Info("Engine main loop ended.");
 	}
 }

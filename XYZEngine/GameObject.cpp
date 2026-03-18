@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "GameObject.h"
+#include "Logger.h"
 
 namespace XYZEngine
 {
@@ -31,10 +32,10 @@ namespace XYZEngine
 
 	void GameObject::Print(int depth) const
 	{
-		std::cout << std::string(depth * 2, ' ') << GetName() << std::endl;
+		Logger::Instance()->Debug(std::string(depth * 2, ' ') + GetName());
 		for (auto& component : components)
 		{
-			std::cout << std::string(depth * 2, ' ') << "::" << component << std::endl;
+			Logger::Instance()->Debug(std::string(depth * 2, ' ') + "::component");
 		}
 
 		for (GameObject* child : children)

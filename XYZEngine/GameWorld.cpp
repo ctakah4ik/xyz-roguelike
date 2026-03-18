@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "GameWorld.h"
+#include "Logger.h"
 
 namespace XYZEngine
 {
@@ -44,20 +45,24 @@ namespace XYZEngine
 	{
 		GameObject* newGameObject = new GameObject();
 		gameObjects.push_back(newGameObject);
+		Logger::Instance()->Debug("Created unnamed GameObject.");
 		return newGameObject;
 	}
 	GameObject* GameWorld::CreateGameObject(std::string name)
 	{
 		GameObject* newGameObject = new GameObject(name);
 		gameObjects.push_back(newGameObject);
+		Logger::Instance()->Info("Created GameObject: " + name);
 		return newGameObject;
 	}
 	void GameWorld::DestroyGameObject(GameObject* gameObject)
 	{
+		Logger::Instance()->Info("Marked for destruction: " + gameObject->GetName());
 		markedToDestroyGameObjects.push_back(gameObject);
 	}
 	void GameWorld::Clear()
 	{
+		Logger::Instance()->Info("Clearing GameWorld. Total objects: " + std::to_string(gameObjects.size()));
 		for (int i = gameObjects.size() - 1; i >= 0; i--)
 		{
 			if (gameObjects[i] == nullptr)
@@ -91,6 +96,7 @@ namespace XYZEngine
 
 	void GameWorld::DestroyGameObjectImmediate(GameObject* gameObject)
 	{
+		Logger::Instance()->Debug("Destroying GameObject: " + gameObject->GetName());
 		auto parent = gameObject->GetComponent<TransformComponent>()->GetParent();
 		if (parent != nullptr)
 		{
