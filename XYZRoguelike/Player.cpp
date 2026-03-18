@@ -1,6 +1,7 @@
 #include "Player.h"
 #include <ResourceSystem.h>
 #include <SpriteColliderComponent.h>
+#include <Logger.h>
 
 namespace XYZRoguelike
 {
@@ -24,6 +25,18 @@ namespace XYZRoguelike
 		movement->SetSpeed(200.f);
 
 		auto collider = gameObject->AddComponent<XYZEngine::SpriteColliderComponent>();
+
+		auto health = gameObject->AddComponent<XYZEngine::HealthComponent>();
+		health->SetMaxHealth(100.f);
+		health->SetArmor(0.1f);
+
+		auto attack = gameObject->AddComponent<XYZEngine::AttackComponent>();
+		attack->SetDamage(25.f);
+		attack->SetAttackCooldown(0.5f);
+		attack->SetRequireKey(sf::Keyboard::Space);
+		attack->SetAttackRange(60.f);
+
+		XYZEngine::Logger::Instance()->Info("Player created with 100 HP, 10% armor, 25 damage.");
 	}
 
 	XYZEngine::GameObject* Player::GetGameObject()

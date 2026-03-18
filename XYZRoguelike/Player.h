@@ -6,6 +6,8 @@
 #include "RenderSystem.h"
 #include "InputComponent.h"
 #include "MovementComponent.h"
+#include "HealthComponent.h"
+#include "AttackComponent.h"
 #include "GameObject.h"
 
 namespace XYZRoguelike

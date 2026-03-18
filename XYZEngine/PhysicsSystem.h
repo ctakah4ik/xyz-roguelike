@@ -18,6 +18,7 @@ namespace XYZEngine
 		float GetFixedDeltaTime() const;
 		void Subscribe(ColliderComponent* collider);
 		void Unsubscribe(ColliderComponent* collider);
+		const std::vector<ColliderComponent*>& GetColliders() const;
 	private:
 		PhysicsSystem() {}
 		~PhysicsSystem() {}
