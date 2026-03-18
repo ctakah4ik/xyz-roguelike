@@ -113,10 +113,129 @@ namespace XYZEngine
 		textureMaps.erase(textureMap);
 	}
 
+	void ResourceSystem::CreateColorTexture(const std::string& name, unsigned int width, unsigned int height, const sf::Color& color)
+	{
+		if (textures.find(name) != textures.end())
+		{
+			return;
+		}
+
+		sf::Image image;
+		image.create(width, height, color);
+
+		sf::Texture* newTexture = new sf::Texture();
+		if (newTexture->loadFromImage(image))
+		{
+			textures.emplace(name, newTexture);
+		}
+		else
+		{
+			delete newTexture;
+		}
+	}
+
+	void ResourceSystem::LoadSoundBuffer(const std::string& name, std::string sourcePath)
+	{
+		if (soundBuffers.find(name) != soundBuffers.end())
+		{
+			return;
+		}
+
+		sf::SoundBuffer* newBuffer = new sf::SoundBuffer();
+		if (newBuffer->loadFromFile(sourcePath))
+		{
+			soundBuffers.emplace(name, newBuffer);
+		}
+		else
+		{
+			delete newBuffer;
+		}
+	}
+
+	const sf::SoundBuffer* ResourceSystem::GetSoundBuffer(const std::string& name) const
+	{
+		auto it = soundBuffers.find(name);
+		if (it != soundBuffers.end())
+		{
+			return it->second;
+		}
+		return nullptr;
+	}
+
+	void ResourceSystem::DeleteSoundBuffer(const std::string& name)
+	{
+		auto it = soundBuffers.find(name);
+		if (it != soundBuffers.end())
+		{
+			delete it->second;
+			soundBuffers.erase(it);
+		}
+	}
+
+	void ResourceSystem::PlayMusic(const std::string& sourcePath, bool loop)
+	{
+		if (music.openFromFile(sourcePath))
+		{
+			music.setLoop(loop);
+			music.play();
+		}
+	}
+
+	void ResourceSystem::StopMusic()
+	{
+		music.stop();
+	}
+
+	void ResourceSystem::SetMusicVolume(float volume)
+	{
+		music.setVolume(volume);
+	}
+
+	void ResourceSystem::PlaySound(const std::string& bufferName)
+	{
+		CleanupFinishedSounds();
+
+		auto it = soundBuffers.find(bufferName);
+		if (it != soundBuffers.end())
+		{
+			sf::Sound* sound = new sf::Sound(*it->second);
+			sound->play();
+			activeSounds.push_back(sound);
+		}
+	}
+
+	void ResourceSystem::CleanupFinishedSounds()
+	{
+		activeSounds.erase(
+			std::remove_if(activeSounds.begin(), activeSounds.end(),
+				[](sf::Sound* s) {
+					if (s->getStatus() == sf::Sound::Stopped)
+					{
+						delete s;
+						return true;
+					}
+					return false;
+				}),
+			activeSounds.end());
+	}
+
+	ResourceSystem::~ResourceSystem()
+	{
+		Clear();
+	}
+
 	void ResourceSystem::Clear()
 	{
+		StopMusic();
 		DeleteAllTextures();
 		DeleteAllTextureMaps();
+		DeleteAllSoundBuffers();
+
+		for (auto* s : activeSounds)
+		{
+			delete s;
+		}
+		activeSounds.clear();
 	}
 
 	void ResourceSystem::DeleteAllTextures()
@@ -145,6 +264,21 @@ namespace XYZEngine
 		for (const auto& key : keysToDelete)
 		{
 			DeleteSharedTextureMap(key);
+		}
+	}
+
+	void ResourceSystem::DeleteAllSoundBuffers()
+	{
+		std::vector<std::string> keysToDelete;
+
+		for (const auto& bufferPair : soundBuffers)
+		{
+			keysToDelete.push_back(bufferPair.first);
+		}
+
+		for (const auto& key : keysToDelete)
+		{
+			DeleteSoundBuffer(key);
 		}
 	}
 }

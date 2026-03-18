@@ -5,6 +5,7 @@
 #include "SpriteRendererComponent.h"
 #include "RenderSystem.h"
 #include "InputComponent.h"
+#include "MovementComponent.h"
 #include "GameObject.h"
 
 namespace XYZRoguelike

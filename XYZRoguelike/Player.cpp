@@ -9,8 +9,8 @@ namespace XYZRoguelike
 		gameObject = XYZEngine::GameWorld::Instance()->CreateGameObject("Player");
 		auto playerRenderer = gameObject->AddComponent<XYZEngine::SpriteRendererComponent>();
 
-		playerRenderer->SetTexture(*XYZEngine::ResourceSystem::Instance()->GetTextureShared("ball"));
-		playerRenderer->SetPixelSize(32, 32);
+		playerRenderer->SetTexture(*XYZEngine::ResourceSystem::Instance()->GetTextureMapElementShared("player", 0));
+		playerRenderer->SetPixelSize(32, 42);
 
 		auto playerCamera = gameObject->AddComponent<XYZEngine::CameraComponent>();
 		playerCamera->SetWindow(&XYZEngine::RenderSystem::Instance()->GetMainWindow());
@@ -18,9 +18,10 @@ namespace XYZRoguelike
 
 		auto playerInput = gameObject->AddComponent<XYZEngine::InputComponent>();
 
-		auto transform = gameObject->GetComponent<XYZEngine::TransformComponent>();
-
 		auto body = gameObject->AddComponent<XYZEngine::RigidbodyComponent>();
+
+		auto movement = gameObject->AddComponent<XYZEngine::MovementComponent>();
+		movement->SetSpeed(200.f);
 
 		auto collider = gameObject->AddComponent<XYZEngine::SpriteColliderComponent>();
 	}

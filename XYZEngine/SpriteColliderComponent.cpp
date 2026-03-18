@@ -35,7 +35,7 @@ namespace XYZEngine
 		rectangle.setPosition(bounds.left, bounds.top);
 		rectangle.setFillColor(sf::Color::Transparent);
 		rectangle.setOutlineColor(sf::Color::White);
-		rectangle.setOutlineThickness(4);
+		rectangle.setOutlineThickness(1);
 
 		RenderSystem::Instance()->Render(rectangle);
 	}
