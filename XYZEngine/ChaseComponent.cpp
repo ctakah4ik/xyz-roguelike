@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "ChaseComponent.h"
+#include "HealthComponent.h"
+#include "GameObject.h"
 #include "Logger.h"
 
 namespace XYZEngine
@@ -20,6 +22,13 @@ namespace XYZEngine
 	{
 		if (target == nullptr || body == nullptr || transform == nullptr)
 		{
+			return;
+		}
+
+		auto health = gameObject->GetComponent<HealthComponent>();
+		if (health != nullptr && !health->IsAlive())
+		{
+			body->SetLinearVelocity({ 0.f, 0.f });
 			return;
 		}
 

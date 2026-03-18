@@ -115,4 +115,9 @@ namespace XYZEngine
 		Logger::Instance()->Debug("PhysicsSystem: collider unsubscribed for " + collider->GetGameObject()->GetName());
 		colliders.erase(std::remove_if(colliders.begin(), colliders.end(), [collider](ColliderComponent* obj) { return obj == collider; }), colliders.end());
 	}
+
+	const std::vector<ColliderComponent*>& PhysicsSystem::GetColliders() const
+	{
+		return colliders;
+	}
 }

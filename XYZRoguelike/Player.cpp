@@ -33,6 +33,8 @@ namespace XYZRoguelike
 		auto attack = gameObject->AddComponent<XYZEngine::AttackComponent>();
 		attack->SetDamage(25.f);
 		attack->SetAttackCooldown(0.5f);
+		attack->SetRequireKey(sf::Keyboard::Space);
+		attack->SetAttackRange(60.f);
 
 		XYZEngine::Logger::Instance()->Info("Player created with 100 HP, 10% armor, 25 damage.");
 	}

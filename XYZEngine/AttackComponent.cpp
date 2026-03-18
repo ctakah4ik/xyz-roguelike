@@ -1,12 +1,15 @@
 #include "pch.h"
 #include "AttackComponent.h"
 #include "GameObject.h"
+#include "PhysicsSystem.h"
 #include "Logger.h"
 
 namespace XYZEngine
 {
 	AttackComponent::AttackComponent(GameObject* gameObject) : Component(gameObject)
 	{
+		transform = gameObject->GetComponent<TransformComponent>();
+
 		auto collider = gameObject->GetComponent<ColliderComponent>();
 		if (collider == nullptr)
 		{
@@ -26,6 +29,16 @@ namespace XYZEngine
 		if (cooldownTimer > 0.f)
 		{
 			cooldownTimer -= deltaTime;
+		}
+
+		// Key-press mode: attack nearby targets when key is pressed
+		if (hasRequiredKey && sf::Keyboard::isKeyPressed(requiredKey) && cooldownTimer <= 0.f)
+		{
+			auto myHealth = gameObject->GetComponent<HealthComponent>();
+			if (myHealth == nullptr || myHealth->IsAlive())
+			{
+				AttackNearbyTarget();
+			}
 		}
 	}
 
@@ -50,9 +63,70 @@ namespace XYZEngine
 		return damage;
 	}
 
+	void AttackComponent::SetRequireKey(sf::Keyboard::Key key)
+	{
+		hasRequiredKey = true;
+		requiredKey = key;
+	}
+
+	void AttackComponent::SetAttackRange(float range)
+	{
+		XYZ_ASSERT(range > 0.f, "Attack range must be positive");
+		attackRange = range;
+	}
+
+	void AttackComponent::AttackNearbyTarget()
+	{
+		if (transform == nullptr)
+		{
+			return;
+		}
+
+		Vector2Df myPos = transform->GetWorldPosition();
+		const auto& colliders = PhysicsSystem::Instance()->GetColliders();
+
+		for (auto* collider : colliders)
+		{
+			if (collider->GetGameObject() == gameObject)
+			{
+				continue;
+			}
+
+			auto targetHealth = collider->GetGameObject()->GetComponent<HealthComponent>();
+			if (targetHealth == nullptr || !targetHealth->IsAlive())
+			{
+				continue;
+			}
+
+			auto targetTransform = collider->GetGameObject()->GetComponent<TransformComponent>();
+			Vector2Df targetPos = targetTransform->GetWorldPosition();
+			Vector2Df diff = targetPos - myPos;
+			float distance = diff.GetLength();
+
+			if (distance <= attackRange)
+			{
+				Logger::Instance()->Info(
+					gameObject->GetName() + " attacks " +
+					collider->GetGameObject()->GetName() +
+					" for " + std::to_string(damage) + " damage");
+
+				targetHealth->TakeDamage(damage);
+				cooldownTimer = attackCooldown;
+				return;
+			}
+		}
+	}
+
 	void AttackComponent::OnCollisionHandler(Collision collision)
 	{
-		if (cooldownTimer > 0.f)
+		// Auto-attack mode (no key required)
+		if (hasRequiredKey || cooldownTimer > 0.f)
+		{
+			return;
+		}
+
+		auto myHealth = gameObject->GetComponent<HealthComponent>();
+		if (myHealth != nullptr && !myHealth->IsAlive())
 		{
 			return;
 		}
