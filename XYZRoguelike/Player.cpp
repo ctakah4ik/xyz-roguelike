@@ -24,6 +24,16 @@ namespace XYZRoguelike
 		movement->SetSpeed(200.f);
 
 		auto collider = gameObject->AddComponent<XYZEngine::SpriteColliderComponent>();
+
+		auto health = gameObject->AddComponent<XYZEngine::HealthComponent>();
+		health->SetMaxHealth(100.f);
+		health->SetArmor(0.1f);
+
+		auto attack = gameObject->AddComponent<XYZEngine::AttackComponent>();
+		attack->SetDamage(25.f);
+		attack->SetAttackCooldown(0.5f);
+
+		XYZEngine::Logger::Instance()->Info("Player created with 100 HP, 10% armor, 25 damage.");
 	}
 
 	XYZEngine::GameObject* Player::GetGameObject()
