@@ -10,15 +10,15 @@ namespace XYZRoguelike
 	{
 		// Generate level: floor and walls (floor created first so it renders behind)
 		levelGenerator = std::make_shared<LevelGenerator>();
-		levelGenerator->Generate(0.f, 0.f, 20, 20, 32);
+		levelGenerator->Generate(0.f, 0.f, 30, 30, 32);
 
 		// Create player at center
 		player = std::make_shared<Player>();
 
-		// Create enemy nearby but outside detection radius
+		// Create enemy outside detection radius (300), distance ~424
 		auto playerTransform = player->GetGameObject()->GetComponent<TransformComponent>();
 		enemy = std::make_shared<Enemy>(playerTransform);
-		enemy->GetGameObject()->GetComponent<TransformComponent>()->SetWorldPosition(200.f, 200.f);
+		enemy->GetGameObject()->GetComponent<TransformComponent>()->SetWorldPosition(300.f, 300.f);
 
 		// Play background music
 		ResourceSystem::Instance()->PlayMusic("Resources/Sounds/main.wav", true);
